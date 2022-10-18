@@ -8,12 +8,22 @@ import StateCard from '../components/StateCard'
 
 const Home = () => {
     const [covidData, setCovidData] = useState<ICovid>()
-    console.log(covidData)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(false)
 
 
-    const getData = useCallback( async() => {
-        const { data } = await axios.get('https://covidnigeria.herokuapp.com')
-        setCovidData(data.data)
+    const getData = useCallback(async () => {
+        setLoading(true)
+        try {
+            const { data } = await axios.get('https://covidnigeria.herokuapp.com')
+            setCovidData(data.data)
+            
+        } catch (error) {
+            setError(true)
+            
+        }
+
+        setLoading(false)
 
 
     }, [])
@@ -24,7 +34,26 @@ const Home = () => {
         
     }, [getData])
 
-    const date  = new Date()
+    const date = new Date()
+    
+
+
+    if (loading) {
+        return (
+            <div className=' flex justify-center items-center  h-screen w-screen'>
+                <p className='text-2xl'>Loading......</p>
+
+            </div>
+        )
+    }
+    if (error) {
+        return (
+            <div className=' flex justify-center items-center  h-screen w-screen'>
+                <p className='text-2xl text-[#ff0000]'>An Error has occurred...... Reload your Browser</p>
+
+            </div>
+        )
+    }
 
 
   return (
